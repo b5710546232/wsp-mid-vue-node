@@ -10,31 +10,35 @@
         <button class="my-button button " @click="addBook(book_id,isbn,book_name,price,author)" >insert</button>
     </form>
   </div>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>book_id</th>
-        <th>isbn</th>
-        <th>book_name</th>
-        <th>price</th>
-        <th>author</th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="book in books">
-      <td><input type="text" placeholder="book_id"  v-model="book.book_id" v-bind:value="book.book_id"></td>
-      <td><input type="text" placeholder="isbn" v-model="book.isbn"  v-bind:value="book.isbn"></td>
-      <td><input type="text" placeholder="book_name" v-model="book.book_name"  v-bind:value="book.book_name"></td>
-      <td><input type="text" placeholder="price" v-model="book.price" v-bind:value="book.price"></td>
-      <td><input type="text" placeholder="author" v-model="book.author" v-bind:value="book.author"></td>
-      <td><button @click="updateBook(book._id,book.book_id,book.isbn,book.book_name,book.price,book.author)">update</button></td>
-      <td><button @click="deleteBook(book._id)">delete</button></td>
-      </tr>
-      </div>
-    </tbody>
-  </table>
+  <div class="wrapper" v-if="is-connect">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>book_id</th>
+          <th>isbn</th>
+          <th>book_name</th>
+          <th>price</th>
+          <th>author</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="book in books">
+        <td><input type="text" placeholder="book_id"  v-model="book.book_id" v-bind:value="book.book_id"></td>
+        <td><input type="text" placeholder="isbn" v-model="book.isbn"  v-bind:value="book.isbn"></td>
+        <td><input type="text" placeholder="book_name" v-model="book.book_name"  v-bind:value="book.book_name"></td>
+        <td><input type="text" placeholder="price" v-model="book.price" v-bind:value="book.price"></td>
+        <td><input type="text" placeholder="author" v-model="book.author" v-bind:value="book.author"></td>
+        <td><button @click="updateBook(book._id,book.book_id,book.isbn,book.book_name,book.price,book.author)">update</button></td>
+        <td><button @click="deleteBook(book._id)">delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="notify-text" v-else>
+      Can't connect to server
+    </div>
 </div>
 </template>
 
@@ -44,7 +48,8 @@ const BOOKSTORE_ENDPOINT = API +'bookstore/'
 export default {
   data () {
     return {
-      books:[]
+      books:[],
+      isConnect:true
     }
   },
   computed: {},
@@ -62,6 +67,7 @@ export default {
 
       }).catch((error) =>{
         console.log(error);
+        this.isConnect = false
       })
     },
     addBook(book_id,isbn,book_name,price,author){
@@ -73,6 +79,7 @@ export default {
         this.loadBook()
       }).catch((error) =>{
         console.log(error);
+        this.isConnect = false
       })
     console.log('add');
     },
@@ -84,6 +91,7 @@ export default {
 
       }).catch((error) =>{
         console.log(error);
+        this.isConnect = false
       })
     },
     loadBook(){
@@ -92,7 +100,8 @@ export default {
         console.log(response.data)
         this.books = response.data
       }).catch((error) =>{
-        console.log(error);
+        console.log(error)
+        this.isConnect = false
       })
     }
   },
@@ -112,5 +121,10 @@ export default {
 }
 .input{
   margin-bottom: 1%;
+}
+.notify-text{
+  color: rgb(255, 148, 167);
+  text-align: center;
+  font-size: 30px;
 }
 </style>
